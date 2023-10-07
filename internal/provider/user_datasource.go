@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -29,6 +30,9 @@ type UserDataSource struct {
 
 type UserInfo struct {
 	Filter map[string]types.String `tfsdk:"filter" json:"filter"`
+	ID     types.Int64             `tfsdk:"id" json:"number"`
+	Name   types.String            `tfsdk:"name" json:"name"`
+	Age    types.Int64             `tfsdk:"age" json:"age"`
 	Users  []MyInfo                `tfsdk:"users"`
 }
 
@@ -66,6 +70,15 @@ func (d *UserDataSource) Schema(_ context.Context, req datasource.SchemaRequest,
 
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"id": schema.Int64Attribute{
+				Optional: true,
+			},
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"age": schema.Int64Attribute{
+				Optional: true,
+			},
 			"filter": schema.MapAttribute{
 				ElementType: types.StringType,
 				Optional:    true,
@@ -118,14 +131,11 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	// Map response body to model
 	for _, user := range users {
 		id, _ := strconv.Atoi(user.ID)
-
 		userState := MyInfo{
-
 			ID:   types.Int64Value(int64(id)),
 			Name: types.StringValue(user.Name),
 			Age:  types.Int64Value(int64(user.Age)),
 		}
-
 		state.Users = append(state.Users, userState)
 	}
 
@@ -133,6 +143,9 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	tflog.Info(ctx, "ReadGEt", map[string]any{"Data1": f})
 
 	// Set state
+	sort.Slice(state.Users[:], func(i, j int) bool {
+		return state.Users[i].ID.ValueInt64() < state.Users[j].ID.ValueInt64()
+	})
 	diags := resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
