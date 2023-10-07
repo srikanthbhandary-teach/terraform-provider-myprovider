@@ -11,14 +11,10 @@ provider "myprovider" {
 }
 
 data "myprovider_users" "example" {
-
+  filter = {
+    id = 1
+  }
 }
 output "myprovider_users" {
   value = data.myprovider_users.example.users
-}
-
-resource "myprovider_user" "user1" {
-  name = "user1"
-  age  = 50
-  id   = 400
 }

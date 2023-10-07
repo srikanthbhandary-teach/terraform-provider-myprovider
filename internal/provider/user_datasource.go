@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	client "github.com/srikanthbhandary-teach/my-client"
 )
 
@@ -52,7 +51,7 @@ func (d *UserDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *hashicups.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected .Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return
@@ -110,19 +109,15 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	users, err := d.client.GetMyInfo(state.Filter["id"].ValueString())
 	if err != nil {
-		tflog.Info(ctx, "Read HashiCups Coffees", map[string]any{"success": err.Error()})
-
 		resp.Diagnostics.AddError(
-			"UnableSRi to Read HashiCups Coffees",
+			"Unable to read users data",
 			err.Error())
 		return
 	}
-	tflog.SetField(ctx, "Buddy", users)
-	tflog.Info(ctx, "Read HashiCups Coffees", map[string]any{"success": users})
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read HashiCups Coffees",
+			"Unable to Read Users data",
 			err.Error(),
 		)
 		return
@@ -138,9 +133,6 @@ func (d *UserDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 		state.Users = append(state.Users, userState)
 	}
-
-	var f interface{}
-	tflog.Info(ctx, "ReadGEt", map[string]any{"Data1": f})
 
 	// Set state
 	sort.Slice(state.Users[:], func(i, j int) bool {

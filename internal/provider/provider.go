@@ -18,8 +18,7 @@ var (
 	_ provider.Provider = &myprovider{}
 )
 
-// hashicupsProviderModel maps provider schema data to a Go type.
-type hashicupsProviderModel struct {
+type ProviderModel struct {
 	ApiKey  types.String `tfsdk:"apikey"`
 	BaseUrl types.String `tfsdk:"baseurl"`
 }
@@ -58,7 +57,7 @@ func (p *myprovider) Schema(_ context.Context, _ provider.SchemaRequest, resp *p
 
 func (p *myprovider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	// Retrieve provider data from configuration
-	var config hashicupsProviderModel
+	var config ProviderModel
 	diags := req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -72,8 +71,8 @@ func (p *myprovider) Configure(ctx context.Context, req provider.ConfigureReques
 		resp.Diagnostics.AddAttributeError(
 			path.Root("apikey"),
 			"Unknown apikey",
-			"The provider cannot create the HashiCups API client as there is an unknown configuration value for the HashiCups API host. "+
-				"Either target apply the source of the value first, set the value statically in the configuration, or use the HASHICUPS_HOST environment variable.",
+			"The provider cannot create the API client as there is an unknown configuration value for the  API host. "+
+				"Either target apply the source of the value first, set the value statically in the configuration or use the APIKEY environment variable.",
 		)
 	}
 

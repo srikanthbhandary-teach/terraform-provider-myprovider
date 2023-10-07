@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	client "github.com/srikanthbhandary-teach/my-client"
 )
 
@@ -108,19 +107,15 @@ func (r *UserResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	users, err := r.client.GetMyInfo(state.ID.String())
 	if err != nil {
-		tflog.Info(ctx, "Read HashiCups Coffees", map[string]any{"success": err.Error()})
-
 		resp.Diagnostics.AddError(
-			"UnableSRi to Read HashiCups Coffees",
+			"Unable to read users data",
 			state.ID.String())
 		return
 	}
-	tflog.SetField(ctx, "Buddy", users)
-	tflog.Info(ctx, "Read HashiCups Coffees", map[string]any{"success": users})
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read HashiCups Coffees",
+			"Unable to read users data",
 			err.Error(),
 		)
 		return
@@ -139,11 +134,6 @@ func (r *UserResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		state.Age = userState.Age
 		break
 	}
-
-	var f interface{}
-	tflog.Info(ctx, "ReadGEt", map[string]any{"Data1": f})
-
-	// Set state
 
 	diags := resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
