@@ -15,7 +15,7 @@ This guide provides a comprehensive walkthrough to set up and use a custom Terra
 
 ## 1. Running the Local Server
 
-The local server manages data entities and exposes HTTP APIs for creating, retrieving, updating, and deleting these entities.
+The local server manages data entities and exposes HTTP APIs for creating, retrieving, updating, and deleting the user entities.
 
 ### Prerequisites
 
