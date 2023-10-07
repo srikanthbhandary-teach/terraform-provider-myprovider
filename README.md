@@ -1,5 +1,3 @@
-Of course! Here's the comprehensive guide incorporating all the requested information, including steps to run the server locally, setting up local development for Terraform, and using the custom Terraform provider:
-
 ---
 
 # Comprehensive Guide: Terraform Custom Provider and Local Server
