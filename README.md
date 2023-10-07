@@ -1,101 +1,162 @@
+Of course! Here's the comprehensive guide incorporating all the requested information, including steps to run the server locally, setting up local development for Terraform, and using the custom Terraform provider:
+
 ---
 
-# Custom Terraform Provider: "myprovider"
+# Comprehensive Guide: Terraform Custom Provider and Local Server
 
-## Introduction
+This guide provides a comprehensive walkthrough to set up and use a custom Terraform provider along with a local server to manage data entities.
 
-The "myprovider" custom Terraform provider is designed to interact with the HashiCups API for managing `MyInfo` entities. It offers seamless integration with Terraform, enabling users to provision and manage `MyInfo` instances effectively.
+## Table of Contents
 
-## Terraform Integration
+1. [Running the Local Server](#1-running-the-local-server)
+2. [Setting Up Local Development for Terraform](#2-setting-up-local-development-for-terraform)
+3. [Using the Custom Terraform Provider](#3-using-the-custom-terraform-provider)
+4. [Terraform Examples](#4-terraform-examples)
 
-The "myprovider" Terraform provider allows users to define and manage `MyInfo` entities within their Terraform configurations. This integration enhances the infrastructure as code (IaC) experience, enabling the provisioning and management of `MyInfo` entities alongside other infrastructure components.
+---
 
-## Server Functionalities
+## 1. Running the Local Server
 
-The "myprovider" custom Terraform provider is backed by a server application that provides the following functionalities:
+The local server manages data entities and exposes HTTP APIs for creating, retrieving, updating, and deleting these entities.
 
-### Managing `MyInfo` Entities
+### Prerequisites
 
-The server is responsible for managing `MyInfo` entities, where each entity represents information about an entity with properties like `ID`, `Name`, and `Age`.
+- Go installed on your machine
 
-- **Adding `MyInfo` Entity**: The server allows adding a new `MyInfo` entity or updating an existing one using the `AddMyInfo` method.
+### Steps
 
-- **Getting `MyInfo` Entity by ID**: The `GetMyInfo` method retrieves a `MyInfo` entity based on its unique ID.
+1. Clone the server repository from GitHub:
 
-- **Getting All `MyInfo` Entities**: The `GetAllMyInfo` method fetches all available `MyInfo` entities.
+   ```bash
+   git clone https://github.com/srikanthbhandary-teach/my-server.git
+   ```
 
-- **Deleting `MyInfo` Entity by ID**: The `DeleteMyInfo` method deletes a `MyInfo` entity based on its ID.
+2. Navigate to the server directory:
 
-- **Updating `MyInfo` Entity by ID**: The `UpdateMyInfo` method updates an existing `MyInfo` entity based on its ID.
+   ```bash
+   cd server
+   ```
 
-### HTTP APIs for CRUD Operations
+3. Run the server:
 
-The server exposes HTTP APIs to interact with the `MyInfo` entities, allowing for basic CRUD (Create, Read, Update, Delete) operations.
+   ```bash
+   go run main.go
+   ```
 
-- **Creating a `MyInfo` Entity**: A `POST` request to the appropriate endpoint with the `MyInfo` entity data allows creating a new `MyInfo` entity.
+4. The server will start and be accessible at `http://localhost:8080`.
 
-- **Retrieving a `MyInfo` Entity**: A `GET` request to the appropriate endpoint with the `MyInfo` entity's ID retrieves the `MyInfo` entity.
+---
 
-- **Updating a `MyInfo` Entity**: A `PUT` request to the appropriate endpoint with the `MyInfo` entity's ID and updated data updates the `MyInfo` entity.
+## 2. Setting Up Local Development for Terraform
 
-- **Deleting a `MyInfo` Entity**: A `DELETE` request to the appropriate endpoint with the `MyInfo` entity's ID deletes the `MyInfo` entity.
+To develop and test your custom Terraform provider locally, follow these steps:
 
-## Usage
+### Prerequisites
 
-To utilize the "myprovider" custom Terraform provider and leverage the server functionalities, follow the steps outlined below.
+- Go installed on your machine
 
-### Example Usage
+### Steps
 
-#### Provider Configuration
+1. Clone the custom Terraform provider repository from GitHub:
 
-```hcl
-terraform {
-  required_providers {
-    myprovider = {
-      source = "github.com/srikanthbhandary-teach/myprovider"
-    }
-  }
-}
+   ```bash
+   git clone https://github.com/srikanthbhandary-teach/myprovider.git
+   ```
 
-provider "myprovider" {
-  apikey = "myAppSecret12254"
-}
-```
+2. Navigate to the provider directory:
 
-In this example, we define the "myprovider" Terraform provider and configure its API key.
+   ```bash
+   cd myprovider
+   ```
 
-#### Data Source - Fetching Users
+3. Install the custom Terraform provider using Go modules:
+
+   ```bash
+   go install github.com/srikanthbhandary-teach/myprovider@latest
+   ```
+
+4. Verify the installation:
+
+   ```bash
+   terraform init
+   ```
+
+   This command initializes the Terraform configuration and verifies the custom provider's installation.
+
+---
+
+## 3. Using the Custom Terraform Provider
+
+To use the custom Terraform provider, you'll first need to install it.
+
+### Prerequisites
+
+- Terraform installed on your machine
+
+### Steps
+
+1. **Install the Custom Terraform Provider:**
+
+   Run the following command to download and install the custom Terraform provider using Go modules:
+
+   ```bash
+   go install github.com/srikanthbhandary-teach/myprovider@latest
+   ```
+
+2. **Verify the Installation:**
+
+   Ensure that the custom provider is installed and accessible by running:
+
+   ```bash
+   terraform init
+   ```
+
+   This command initializes the Terraform configuration and verifies the custom provider's installation.
+
+3. **Use the Custom Provider:**
+
+   In your Terraform configuration, specify the custom provider in the `terraform` block:
+
+   ```hcl
+   terraform {
+     required_providers {
+       myprovider = {
+         source = "github.com/srikanthbhandary-teach/myprovider"
+       }
+     }
+   }
+   ```
+
+   Use the provider in your resources and data sources.
+
+---
+
+## 4. Terraform Examples
+
+Here are some examples of using the custom Terraform provider:
 
 ```hcl
 data "myprovider_users" "example" {
   filter = {
     name = "srikanth"
-    id = 10
-    age = 20
+    id   = 10
+    age  = 20
   }
 }
 
 output "myprovider_users" {
   value = data.myprovider_users.example.users
 }
-```
 
-Here, we retrieve users based on the specified filters for `name`, `id`, and `age`, and output the users' information.
-
-#### Resource - Creating a User
-
-```hcl
 resource "myprovider_user" "user1" {
   name = "srikanth1"
-  age = 30
-  id = 11
+  age  = 30
+  id   = 11
 }
 ```
 
-This block defines a resource to create a user with the specified `name`, `age`, and `id`.
-
-For more details on using this provider and leveraging the server functionalities, refer to the usage documentation.
-
 ---
 
-The example usage provided above demonstrates how to configure the "myprovider" Terraform provider, fetch users based on specified filters, and create a user using the custom provider. Users can integrate these configurations into their Terraform projects to manage `MyInfo` entities effectively.
+This guide covers setting up and using a custom Terraform provider, running a local server, and using the provider in Terraform configurations.
+
+Feel free to suggest any further modifications or additional steps if needed!
